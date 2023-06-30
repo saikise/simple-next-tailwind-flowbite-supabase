@@ -3,30 +3,30 @@
 import {
   createServerActionClient,
   createServerComponentClient,
-} from '@supabase/auth-helpers-nextjs'
-import { cookies } from 'next/headers'
-import Image from 'next/image'
-import { redirect } from 'next/navigation'
+} from "@supabase/auth-helpers-nextjs";
+import { cookies } from "next/headers";
+import Image from "next/image";
+import { redirect } from "next/navigation";
 
 export default async function ProtectedRoute() {
-  const supabase = createServerComponentClient({ cookies })
+  const supabase = createServerComponentClient({ cookies });
 
   const {
     data: { user },
-  } = await supabase.auth.getUser()
+  } = await supabase.auth.getUser();
 
   if (!user) {
     // This route can only be accessed by authenticated users.
     // Unauthenticated users will be redirected to the `/login` route.
-    redirect('/login')
+    redirect("/login");
   }
 
   const signOut = async () => {
-    'use server'
-    const supabase = createServerActionClient({ cookies })
-    await supabase.auth.signOut()
-    redirect('/login')
-  }
+    "use server";
+    const supabase = createServerActionClient({ cookies });
+    await supabase.auth.signOut();
+    redirect("/login");
+  };
 
   return (
     <div className="flex-1 flex flex-col max-w-3xl mt-24">
@@ -40,7 +40,7 @@ export default async function ProtectedRoute() {
             Protected page
           </code>
           <span className="flex gap-4">
-            Hey, {user.email}! <span className="border-r"></span>{' '}
+            Hey, {user.email}! <span className="border-r"></span>{" "}
             <form action={signOut}>
               <button className="text-neutral-100">Logout</button>
             </form>
@@ -67,7 +67,7 @@ export default async function ProtectedRoute() {
       </div>
 
       <p className="text-3xl mx-auto max-w-2xl text-center mt-8 text-white">
-        The fastest way to get started building apps with{' '}
+        The fastest way to get started building apps with{" "}
         <strong>Supabase</strong> and <strong>Next.js</strong>
       </p>
 
@@ -77,5 +77,5 @@ export default async function ProtectedRoute() {
         </span>
       </div>
     </div>
-  )
+  );
 }

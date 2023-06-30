@@ -1,0 +1,8 @@
+<svg 
+    className="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
+    fill="currentColor"
+    stroke="currentColor"
+    viewBox="0 0 24 24"
+    xmlns="http://www.w3.org/2000/svg">
+    <path d="M12 22s-8-5-8-11V4l8-2l8 2v7c0 6-8 11-8 11z"></path>
+</svg>
