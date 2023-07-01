@@ -34,5 +34,3 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# undo script for 20230618024722_init.sql
-/supabase/migrations/20230618024722_undo.sql
