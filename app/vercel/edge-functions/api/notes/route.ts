@@ -1,14 +1,14 @@
 import { getNotes } from "@/lib/data";
-import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
-import { cookies } from "next/headers";
-import { NextResponse } from "next/server";
+import { createMiddlewareClient } from "@supabase/auth-helpers-nextjs";
+import { NextRequest, NextResponse } from "next/server";
 
 // References: https://nextjs.org/docs/app/api-reference/file-conventions/route-segment-config
 // Run this function on edge.
 export const runtime = "edge";
 
-export async function GET() {
-  const supabase = createServerComponentClient({ cookies });
+export async function GET(req: NextRequest) {
+  const res = NextResponse.next();
+  const supabase = createMiddlewareClient({ req, res });
 
   const {
     data: { user },
