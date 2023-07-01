@@ -91,14 +91,6 @@ export default function Sidebar() {
               <span className="ml-3">Serverless Functions</span>
             </Link>
           </li>
-          <li>
-            <Link
-              href="/vercel/edge-functions"
-              className="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group"
-            >
-              <span className="ml-3">Edge Functions</span>
-            </Link>
-          </li>
         </ul>
       </div>
     </aside>
