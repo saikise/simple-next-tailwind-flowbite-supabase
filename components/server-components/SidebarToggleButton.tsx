@@ -1,6 +1,8 @@
 export default function SidebarToggleButton() {
   return (
     <button
+      // Reference: https://flowbite.com/docs/getting-started/introduction/#data-attributes
+      // The data-drawer-target attribute is used to toggle the drawer with the id of drawer-navigation (see Sidebar.tsx).
       data-drawer-target="drawer-navigation"
       data-drawer-toggle="drawer-navigation"
       aria-controls="drawer-navigation"

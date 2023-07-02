@@ -1,6 +1,7 @@
 import type { Database } from "@/lib/database.types";
 import type { SupabaseClient } from "@supabase/auth-helpers-nextjs";
 
+// Reference: https://supabase.com/docs/reference/javascript/insert
 export const createNote = async ({
   supabase,
   title,
@@ -28,6 +29,7 @@ export const createNote = async ({
   return data;
 };
 
+// Reference: https://supabase.com/docs/reference/javascript/delete
 export const deleteNote = async ({
   supabase,
   noteId,
@@ -46,6 +48,7 @@ export const deleteNote = async ({
   return data;
 };
 
+// Reference: https://supabase.com/docs/reference/javascript/select
 export const getNotes = async ({
   supabase,
   userId,
@@ -64,6 +67,7 @@ export const getNotes = async ({
   return data;
 };
 
+// Reference: https://supabase.com/docs/reference/javascript/update
 export const updateNote = async ({
   supabase,
   noteId,
@@ -89,6 +93,7 @@ export const updateNote = async ({
   return data;
 };
 
+// Reference: https://supabase.com/docs/reference/javascript/auth-signinwithpassword
 export const login = async ({
   supabase,
   email,
@@ -105,6 +110,7 @@ export const login = async ({
   if (error) throw error;
 };
 
+// Register: https://supabase.com/docs/reference/javascript/auth-signout
 export const logout = async ({
   supabase,
 }: {
@@ -114,6 +120,7 @@ export const logout = async ({
   if (error) throw error;
 };
 
+// Reference: https://supabase.com/docs/reference/javascript/auth-signup
 export const register = async ({
   supabase,
   email,
@@ -135,6 +142,7 @@ export const register = async ({
   if (error) throw error;
 };
 
+// Reference: https://supabase.com/docs/reference/javascript/storage-from-createsignedurl
 export const createSignedUrl = async ({
   supabase,
   bucket,
@@ -156,6 +164,7 @@ export const createSignedUrl = async ({
   return data;
 };
 
+// Reference: https://supabase.com/docs/reference/javascript/storage-from-download
 export const downloadFile = async ({
   supabase,
   bucket,
@@ -175,6 +184,7 @@ export const downloadFile = async ({
   return data;
 };
 
+// Reference: https://supabase.com/docs/reference/javascript/storage-from-list
 export const getFilesInBucket = async ({
   supabase,
   bucket,
@@ -202,6 +212,7 @@ export const getFilesInBucket = async ({
   return data;
 };
 
+// Reference: https://supabase.com/docs/reference/javascript/storage-from-remove
 export const deleteFiles = async ({
   supabase,
   bucket,
@@ -219,6 +230,7 @@ export const deleteFiles = async ({
   return data;
 };
 
+// Reference: https://supabase.com/docs/reference/javascript/storage-emptybucket
 export const emptyBucket = async ({
   supabase,
   bucket,
@@ -234,6 +246,7 @@ export const emptyBucket = async ({
   return data;
 };
 
+// Reference: https://supabase.com/docs/reference/javascript/storage-from-upload
 export const uploadFile = async ({
   supabase,
   userId,
@@ -259,7 +272,7 @@ export const uploadFile = async ({
 
   const { data, error } = await supabase.storage
     .from(bucket)
-    // Make sure to use a unique filepath for every file so there will be no duplicates under storage.objects table.
+    // Make sure to use a unique filepath for every file so there will be no duplicates under storage.objects table. By default, Supabase will throw an error if you try to upload a file with the same filepath anyway.
     // Example `${filepath}_${userId}_${time}`: minecraft.png_c6684a95-9b6f-4a1a-8a01-5c3c70c74b13_1687848386693
     .upload(`${filepath}_${userId}_${time}`, file, options);
 

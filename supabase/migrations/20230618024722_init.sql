@@ -1,3 +1,5 @@
+-- Database design for a simple note taking and an image gallery app.
+
 BEGIN;
 
 CREATE TABLE profiles (
@@ -17,8 +19,8 @@ CREATE TABLE notes (
   user_id UUID NOT NULL REFERENCES profiles(id) ON DELETE CASCADE
 );
 
--- Set up access controls for storage.
 -- See https://supabase.com/docs/guides/storage#policy-examples for more details.
+-- Set up access controls for storage.
 -- Table definitions of storage.buckets and storage.objects can be found in Supabase web app's Table Editor.
 CREATE POLICY "Users can CRUD their own buckets" ON storage.buckets FOR ALL USING (
   id = auth.uid() :: text
@@ -37,15 +39,14 @@ CREATE POLICY "Users can CRUD their own objects" ON storage.objects FOR ALL USIN
   AND owner = auth.uid()
 );
 
--- Allow users to SELECT, INSERT, UPDATE, and DELETE their own notes
+-- Allow owners to SELECT, INSERT, UPDATE, and DELETE their notes.
 CREATE POLICY "Users can CRUD their own notes" ON notes FOR ALL USING (user_id = auth.uid());
 
--- Allow users to SELECT, INSERT, UPDATE, and DELETE their own profiles
+-- Allow owners to SELECT, INSERT, UPDATE, and DELETE their profiles.
 CREATE POLICY "Users can CRUD their own profiles" ON profiles FOR ALL USING (id = auth.uid());
 
--- This trigger automatically creates a profile entry when a new user signs up via Supabase Auth.
 -- See https://supabase.com/docs/guides/auth/managing-user-data#using-triggers for more details.
--- Automatically creates a profile and bucket for each new user
+-- This trigger automatically creates a profile entry and a storage bucket when a new user signs up via Supabase Auth.
 CREATE FUNCTION public.handle_new_user() RETURNS TRIGGER AS $$
 BEGIN
   INSERT INTO storage.buckets (id, name, owner)
@@ -64,10 +65,9 @@ INSERT
   ON auth.users FOR EACH ROW EXECUTE PROCEDURE public.handle_new_user();
 
 -- References: https://supabase.com/docs/guides/realtime/postgres-changes#replication-setup
--- Add the notes table to the supabase_realtime publication
+-- Add the notes table to the supabase_realtime publication so we can listen to this table for updates in realtime.
 ALTER PUBLICATION supabase_realtime
 ADD
   TABLE notes;
 
--- Commit the transaction
 COMMIT;
