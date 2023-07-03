@@ -4,7 +4,7 @@ import { createNote } from "@/lib/data";
 import type { Database } from "@/lib/database.types";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import type { User } from "@supabase/supabase-js";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 
 type Props = {
@@ -14,6 +14,7 @@ type Props = {
 export default function CreateNoteForm({ user }: Props) {
   const supabase = createClientComponentClient<Database>();
   const router = useRouter();
+  const pathname = usePathname();
 
   const [title, setTitle] = useState("");
   const [note, setNote] = useState("");
@@ -41,7 +42,12 @@ export default function CreateNoteForm({ user }: Props) {
       setTitle("");
       setNote("");
 
-      router.refresh();
+      // If we're on the realtime page or the serverless functions page, we don't want to refresh the page because our Supabase Realtime subscription will automatically update the UI.
+      if (
+        pathname !== "/supabase/realtime" &&
+        pathname !== "/vercel/serverless-functions"
+      )
+        router.refresh();
     } catch (error) {
       alert("Create note failed. Check the console for more details.");
       console.error(error);

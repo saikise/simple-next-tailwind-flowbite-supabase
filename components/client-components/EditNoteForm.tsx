@@ -3,7 +3,7 @@
 import { updateNote } from "@/lib/data";
 import type { Database } from "@/lib/database.types";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 
 interface EditNoteFormProps {
@@ -22,6 +22,7 @@ export default function EditNoteForm({
   const [formTitle, setFormTitle] = useState(title);
   const [formNote, setFormNote] = useState(content);
   const [isUpdatingNote, setIsUpdatingNote] = useState(false);
+  const pathname = usePathname();
 
   const handleTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setFormTitle(event.target.value);
@@ -43,7 +44,12 @@ export default function EditNoteForm({
         noteId: id,
       });
 
-      router.refresh();
+      // If we're on the realtime page or the serverless functions page, we don't want to refresh the page because our Supabase Realtime subscription will automatically update the UI.
+      if (
+        pathname !== "/supabase/realtime" &&
+        pathname !== "/vercel/serverless-functions"
+      )
+        router.refresh();
     } catch (error) {
       alert("Update note failed. Check the console for more details.");
       console.error(error);

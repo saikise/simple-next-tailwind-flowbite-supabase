@@ -3,10 +3,10 @@
 import { deleteNote } from "@/lib/data";
 import type { Database } from "@/lib/database.types";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
-import ToggleModalButton from "./ToggleModalButton";
 import EditNoteForm from "./EditNoteForm";
+import ToggleModalButton from "./ToggleModalButton";
 
 export interface NoteProps {
   title: string;
@@ -18,6 +18,7 @@ export default function Note({ title, content, id }: NoteProps) {
   const supabase = createClientComponentClient<Database>();
   const router = useRouter();
   const [isDeleting, setIsDeleting] = useState(false);
+  const pathname = usePathname();
 
   const handleDelete = async () => {
     setIsDeleting(true);
@@ -27,7 +28,12 @@ export default function Note({ title, content, id }: NoteProps) {
         supabase,
         noteId: id,
       });
-      router.refresh();
+      // If we're on the realtime page or the serverless functions page, we don't want to refresh the page because our Supabase Realtime subscription will automatically update the UI.
+      if (
+        pathname !== "/supabase/realtime" &&
+        pathname !== "/vercel/serverless-functions"
+      )
+        router.refresh();
     } catch (error) {
       alert("Delete failed. Check the console for more details.");
       console.error(error);
@@ -37,7 +43,7 @@ export default function Note({ title, content, id }: NoteProps) {
   };
 
   return (
-    <div className="max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+    <div className="max-w-xs p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
       <a href="#">
         <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
           {title}

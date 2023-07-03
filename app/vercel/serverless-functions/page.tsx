@@ -37,7 +37,7 @@ export default function Realtime() {
     fetchUser();
   }, [supabase, router]);
 
-  // Fetch notes from Vercel serverless function instead of directly from Supabase.
+  // On page load, fetch notes from Vercel serverless function instead of directly from Supabase.
   useEffect(() => {
     async function fetchNotes() {
       if (!user) return;
@@ -59,14 +59,64 @@ export default function Realtime() {
     fetchNotes();
   }, [supabase, user]);
 
+  // Attaches a listener to the "table-db-changes" channel to listen for changes to the "notes" table and update the notes state accordingly. The same with /supabase/realtime/page.tsx.
+  useEffect(() => {
+    // References: https://supabase.com/docs/guides/realtime/postgres-changes#table-changes
+    const channel = supabase
+      .channel("table-db-changes")
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "notes" },
+        (payload) =>
+          setNotes((notes) => {
+            if (payload.eventType === "INSERT") {
+              const newPayload =
+                payload.new as Database["public"]["Tables"]["notes"]["Row"];
+
+              const newNote = {
+                id: newPayload.id,
+                title: newPayload.title,
+                content: newPayload.content,
+              };
+
+              return [...notes, newNote];
+            } else if (payload.eventType === "UPDATE") {
+              const updatedPayload =
+                payload.new as Database["public"]["Tables"]["notes"]["Row"];
+              const updatedNote = {
+                id: updatedPayload.id,
+                title: updatedPayload.title,
+                content: updatedPayload.content,
+              };
+
+              return notes.map((note) => {
+                if (note.id === updatedNote.id) {
+                  return updatedNote;
+                }
+                return note;
+              });
+            } else if (payload.eventType === "DELETE") {
+              const deletedPayload =
+                payload.old as Database["public"]["Tables"]["notes"]["Row"];
+
+              return notes.filter((note) => note.id !== deletedPayload.id);
+            } else {
+              return [...notes];
+            }
+          })
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [supabase, setNotes, notes]);
+
   return user ? (
     <div className="gap-4 flex flex-col">
       <CreateNoteForm user={user} />
       <div>
-        Page is not updated in realtime. Requires a page refresh to call Vercel
-        serverless function again and see changes. Because router.refresh() only
-        works for data that are fetched server side. Notes here are fetched
-        client-side inside a useEffect.
+        Page is updated in realtime using Supabase Realtime Postgres Changes.
       </div>
       <Pinboard notes={notes} />
     </div>
