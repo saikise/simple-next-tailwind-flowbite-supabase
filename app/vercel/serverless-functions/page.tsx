@@ -11,7 +11,7 @@ import {
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
-export default function Realtime() {
+export default function ServerlessFunctions() {
   const [notes, setNotes] = useState<NoteProps[]>([]);
   const supabase = createClientComponentClient<Database>();
   const router = useRouter();
