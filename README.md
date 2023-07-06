@@ -1,4 +1,4 @@
-# A simple note taking and image gallery web app
+# Simple note taking and image gallery web app
 
 Made with Next.js 13 app router, Supabase auth, database, storage, realtime, and Vercel serverless functions.
 
