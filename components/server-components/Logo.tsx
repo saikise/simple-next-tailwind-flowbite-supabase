@@ -8,7 +8,7 @@ export default function Logo() {
       </span>{" "}
       <sub>
         <span className="hover:text-gray-400 transition-colors duration-200">
-          <Link href="https://saikise.com">by sai kise</Link>
+          <Link href="https://medium.com/@saikise/create-a-project-template-following-a-single-article-next-js-13-app-router-supabase-full-stack-d78f4a43d157">Check tutorial here</Link>
         </span>
       </sub>
     </span>
